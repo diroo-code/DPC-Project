@@ -1,0 +1,43 @@
+psql:../database/migrations/001_init.sql:185: NOTICE:  trigger "profiles_touch_updated_at" for relation "public.profiles" does not exist, skipping
+psql:../database/migrations/001_init.sql:190: NOTICE:  trigger "photos_touch_updated_at" for relation "public.photos" does not exist, skipping
+psql:../database/migrations/001_init.sql:195: NOTICE:  trigger "comments_touch_updated_at" for relation "public.comments" does not exist, skipping
+psql:../database/migrations/001_init.sql:249: NOTICE:  trigger "on_auth_user_created" for relation "auth.users" does not exist, skipping
+psql:../database/migrations/001_init.sql:279: NOTICE:  trigger "photos_daily_quota" for relation "public.photos" does not exist, skipping
+psql:../database/migrations/001_init.sql:294: NOTICE:  policy "profiles_select_authenticated" for relation "public.profiles" does not exist, skipping
+psql:../database/migrations/001_init.sql:298: NOTICE:  policy "profiles_insert_self" for relation "public.profiles" does not exist, skipping
+psql:../database/migrations/001_init.sql:302: NOTICE:  policy "profiles_update_self" for relation "public.profiles" does not exist, skipping
+psql:../database/migrations/001_init.sql:308: NOTICE:  policy "friendships_select_parties" for relation "public.friendships" does not exist, skipping
+psql:../database/migrations/001_init.sql:313: NOTICE:  policy "friendships_insert_requester" for relation "public.friendships" does not exist, skipping
+psql:../database/migrations/001_init.sql:318: NOTICE:  policy "friendships_update_addressee" for relation "public.friendships" does not exist, skipping
+psql:../database/migrations/001_init.sql:328: NOTICE:  policy "friendships_delete_parties" for relation "public.friendships" does not exist, skipping
+psql:../database/migrations/001_init.sql:335: NOTICE:  policy "photos_select_permitted" for relation "public.photos" does not exist, skipping
+psql:../database/migrations/001_init.sql:343: NOTICE:  policy "photos_insert_owner" for relation "public.photos" does not exist, skipping
+psql:../database/migrations/001_init.sql:348: NOTICE:  policy "photos_update_owner" for relation "public.photos" does not exist, skipping
+psql:../database/migrations/001_init.sql:354: NOTICE:  policy "photos_delete_owner" for relation "public.photos" does not exist, skipping
+psql:../database/migrations/001_init.sql:361: NOTICE:  policy "comments_select_viewable" for relation "public.comments" does not exist, skipping
+psql:../database/migrations/001_init.sql:366: NOTICE:  policy "comments_insert_viewable" for relation "public.comments" does not exist, skipping
+psql:../database/migrations/001_init.sql:371: NOTICE:  policy "comments_update_author" for relation "public.comments" does not exist, skipping
+psql:../database/migrations/001_init.sql:377: NOTICE:  policy "comments_delete_author_or_owner" for relation "public.comments" does not exist, skipping
+psql:../database/migrations/001_init.sql:389: NOTICE:  policy "photo_tags_select_viewable" for relation "public.photo_tags" does not exist, skipping
+psql:../database/migrations/001_init.sql:394: NOTICE:  policy "photo_tags_insert_owner" for relation "public.photo_tags" does not exist, skipping
+psql:../database/migrations/001_init.sql:404: NOTICE:  policy "photo_tags_update_owner" for relation "public.photo_tags" does not exist, skipping
+psql:../database/migrations/001_init.sql:420: NOTICE:  policy "photo_tags_delete_owner" for relation "public.photo_tags" does not exist, skipping
+psql:../database/migrations/002_storage.sql:32: NOTICE:  policy "photos_read_permitted" for relation "storage.objects" does not exist, skipping
+psql:../database/migrations/002_storage.sql:41: NOTICE:  policy "photos_insert_owner" for relation "storage.objects" does not exist, skipping
+psql:../database/migrations/002_storage.sql:54: NOTICE:  policy "photos_update_owner" for relation "storage.objects" does not exist, skipping
+psql:../database/migrations/002_storage.sql:66: NOTICE:  policy "photos_delete_owner" for relation "storage.objects" does not exist, skipping
+=== brief paths on a live server ===
+   GET /health              -> 200
+   GET /me (no token)       -> 401
+   GET /me                  -> 200 {"id":"98b5e07b-f832-4b59-abbb-d10be975dea4","username":"alice","display_name":"Alice","bio":null,"avatar_path":null,"created_at":"2026-10-29T07:07:46.564781Z","updated_at":"2026-10-29T07:07:46.564781Z"}
+   GET /profiles/{id}       -> 200 {"id":"98b5e07b-f832-4b59-abbb-d10be975dea4","username":"alice","display_name":"Alice","bio":null,"avatar_path":null,"created_at":"2026-10-29T07:07:46.564781Z"}
+   GET /profiles/unknown    -> 404
+   POST /photos             -> id 631a6f80...
+   GET /photos              -> 200 total=1
+   GET /photos/search?q=sun -> 200 total=1
+   GET /photos/search (no q)-> 422
+   GET /photos/{id}/comments-> 200
+   GET /friends             -> 200
+   GET /photos/{id}         -> 200
+   DELETE /photos/{id}      -> 204
+=== server stopped, log lines: 0 ===

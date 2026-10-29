@@ -1,0 +1,68 @@
+psql:../database/migrations/001_init.sql:185: NOTICE:  trigger "profiles_touch_updated_at" for relation "public.profiles" does not exist, skipping
+psql:../database/migrations/001_init.sql:190: NOTICE:  trigger "photos_touch_updated_at" for relation "public.photos" does not exist, skipping
+psql:../database/migrations/001_init.sql:195: NOTICE:  trigger "comments_touch_updated_at" for relation "public.comments" does not exist, skipping
+psql:../database/migrations/001_init.sql:249: NOTICE:  trigger "on_auth_user_created" for relation "auth.users" does not exist, skipping
+psql:../database/migrations/001_init.sql:279: NOTICE:  trigger "photos_daily_quota" for relation "public.photos" does not exist, skipping
+psql:../database/migrations/001_init.sql:294: NOTICE:  policy "profiles_select_authenticated" for relation "public.profiles" does not exist, skipping
+psql:../database/migrations/001_init.sql:298: NOTICE:  policy "profiles_insert_self" for relation "public.profiles" does not exist, skipping
+psql:../database/migrations/001_init.sql:302: NOTICE:  policy "profiles_update_self" for relation "public.profiles" does not exist, skipping
+psql:../database/migrations/001_init.sql:308: NOTICE:  policy "friendships_select_parties" for relation "public.friendships" does not exist, skipping
+psql:../database/migrations/001_init.sql:313: NOTICE:  policy "friendships_insert_requester" for relation "public.friendships" does not exist, skipping
+psql:../database/migrations/001_init.sql:318: NOTICE:  policy "friendships_update_addressee" for relation "public.friendships" does not exist, skipping
+psql:../database/migrations/001_init.sql:328: NOTICE:  policy "friendships_delete_parties" for relation "public.friendships" does not exist, skipping
+psql:../database/migrations/001_init.sql:335: NOTICE:  policy "photos_select_permitted" for relation "public.photos" does not exist, skipping
+psql:../database/migrations/001_init.sql:343: NOTICE:  policy "photos_insert_owner" for relation "public.photos" does not exist, skipping
+psql:../database/migrations/001_init.sql:348: NOTICE:  policy "photos_update_owner" for relation "public.photos" does not exist, skipping
+psql:../database/migrations/001_init.sql:354: NOTICE:  policy "photos_delete_owner" for relation "public.photos" does not exist, skipping
+psql:../database/migrations/001_init.sql:361: NOTICE:  policy "comments_select_viewable" for relation "public.comments" does not exist, skipping
+psql:../database/migrations/001_init.sql:366: NOTICE:  policy "comments_insert_viewable" for relation "public.comments" does not exist, skipping
+psql:../database/migrations/001_init.sql:371: NOTICE:  policy "comments_update_author" for relation "public.comments" does not exist, skipping
+psql:../database/migrations/001_init.sql:377: NOTICE:  policy "comments_delete_author_or_owner" for relation "public.comments" does not exist, skipping
+psql:../database/migrations/001_init.sql:389: NOTICE:  policy "photo_tags_select_viewable" for relation "public.photo_tags" does not exist, skipping
+psql:../database/migrations/001_init.sql:394: NOTICE:  policy "photo_tags_insert_owner" for relation "public.photo_tags" does not exist, skipping
+psql:../database/migrations/001_init.sql:404: NOTICE:  policy "photo_tags_update_owner" for relation "public.photo_tags" does not exist, skipping
+psql:../database/migrations/001_init.sql:420: NOTICE:  policy "photo_tags_delete_owner" for relation "public.photo_tags" does not exist, skipping
+psql:../database/migrations/002_storage.sql:32: NOTICE:  policy "photos_read_permitted" for relation "storage.objects" does not exist, skipping
+psql:../database/migrations/002_storage.sql:41: NOTICE:  policy "photos_insert_owner" for relation "storage.objects" does not exist, skipping
+psql:../database/migrations/002_storage.sql:54: NOTICE:  policy "photos_update_owner" for relation "storage.objects" does not exist, skipping
+psql:../database/migrations/002_storage.sql:66: NOTICE:  policy "photos_delete_owner" for relation "storage.objects" does not exist, skipping
+database ready: tables 5
+users: {'alice': 'ba04d8c2-5ce1-4976-8eeb-94bf9b78e3e9', 'bob': '48c6180e-8d03-4a48-a0aa-acd9a9637ae7', 'carol': 'bb427dc1-f798-46e6-b5a5-d54c9a0963aa'}
+
+=== 1. alice uploads a photo ===
+   status 201  id 057003be-5e99-4770-bcac-0355d47baa8e  alice ['lake', 'sunset']
+
+=== 2. carol uploads her own photo (control) ===
+   status 201
+
+=== 3. bob is not yet a friend, so he must not see alice's photo ===
+   bob feed total: 0 | items: 0
+   bob photo url: 404
+
+=== 4. alice sends a friend request, bob accepts ===
+   request e66d9b74-17bb-4d44-909e-deea1d8f7d0d status pending
+   bob accepts: 200
+
+=== 5. bob can now see the feed and comment ===
+   bob feed total: 1 | captions: ['Lake at dusk']
+   bob comment: 201
+   alice sees comments: [('bob', 'Lovely light')]
+
+=== 6. signed URL: bob allowed, carol refused, tampering rejected ===
+   bob url issued: /media/ba04d8c2-5ce1-4976-8eeb-94bf9b78e3e9/057003be-5e99-47...  ttl=60s
+   fetching it: 200 2052 bytes
+   bytes identical: yes
+   carol url request: 404
+   tampered signature: 403
+
+=== 7. alice deletes the photo; it disappears for bob ===
+   delete status: 204
+   bob feed after delete: 0
+   object on disk: 1 file(s) remaining (carol's)
+
+=== 8. permissions that must fail ===
+   bob deletes carol's owner-only photo (invisible to him, expect 404): 404
+   carol accepts a request not addressed to her (should be 403): 403
+   unauthenticated upload (should be 401): 401
+
+=== server stopped: yes | log lines: 0 ===

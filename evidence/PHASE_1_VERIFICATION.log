@@ -1,0 +1,73 @@
+Phase 1 verification summary
+generated: 2026-10-29 06:30:07 UTC
+
+--- structure ---
+./.gitignore
+./MASTER_PROMPT.md
+./README.md
+./backend/.env.example
+./backend/app/__init__.py
+./backend/app/config.py
+./backend/app/db.py
+./backend/app/deps.py
+./backend/app/main.py
+./backend/app/routers/__init__.py
+./backend/app/routers/auth.py
+./backend/app/routers/health.py
+./backend/app/schemas.py
+./backend/app/security.py
+./backend/pytest.ini
+./backend/requirements-dev.txt
+./backend/requirements.txt
+./backend/tests/__init__.py
+./backend/tests/conftest.py
+./backend/tests/test_auth_api.py
+./backend/tests/test_rls.py
+./backend/tests/test_schema.py
+./database/README.md
+./database/migrations/001_init.sql
+./database/migrations/002_storage.sql
+./database/testing/000_local_supabase_stub.sql
+./database/testing/bootstrap_local_role.sql
+./database/testing/setup_local_role.sh
+./docs/PHASE_0_ENVIRONMENT_REPORT.md
+./docs/PHASE_1_REPORT.md
+./docs/SOFTWARE_READINESS.md
+./evidence/PHASE_0_VERIFICATION.log
+./evidence/PHASE_1_LIVE_CHECK.log
+./evidence/PHASE_1_PYTEST.log
+./evidence/PHASE_1_VERIFICATION.log
+./evidence/SPEC_UPDATE_VERIFICATION.log
+./tests/live_check_phase1.sh
+
+--- test result (from the captured run) ---
+   schema: 19
+   rls:    13
+   api:    18
+
+--- live checks (from the captured run) ---
+   GET /health            -> 200  {"status":"ok","service":"TEB3033 Photo Sharing API","version":"0.1.0"}
+   GET /ready             -> 200  {"status":"ready","database":"ok"}
+   GET /auth/me no token  -> 401  {"detail":"missing bearer token"}
+   GET /auth/me bad token -> 401  {"detail":"malformed token header"}
+   GET /auth/me valid     -> 200  {"id":"c0f6ab22-c25a-488f-8341-27c2d1cf6d17","username":"phase1","display_name":"Phase One","bio":null,"avatar_path":null,"created_at":"2026-10-29T06:28:54.997411Z","updated_at":"2026-10-29T06:28:54.997411Z"}
+   PATCH /auth/me         -> 200  {"id":"c0f6ab22-c25a-488f-8341-27c2d1cf6d17","username":"phase1","display_name":"Phase One Updated","bio":"Verified in Phase 1.","avatar_path":null,"created_at":"2026-10-29T06:28:54.997411Z","updated_at":"2026-10-29T06:28:55.704450Z"}
+   GET /docs              -> 200
+
+--- frontend state (must be empty in Phase 1) ---
+   files in frontend/: 0
+   files in database/: 6
+   python files in backend/app/: 10
+
+--- hygiene ---
+   em dashes in all markdown and python: 0
+   committed .env files: 0
+   hardcoded secret patterns: 0
+
+--- hashes ---
+   database/migrations/001_init.sql             eccf85fc0c5426f8
+   database/migrations/002_storage.sql          e4622db9ca8d51e3
+   backend/app/main.py                          fdfa3a589d6e49ad
+   backend/app/security.py                      0ef90950d8a6c092
+   backend/tests/conftest.py                    c89ec0ca27f34597
+   docs/PHASE_1_REPORT.md                       26b4a1174561dd2b

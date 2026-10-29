@@ -1,0 +1,61 @@
+Phase 0 verification evidence
+generated: 2026-10-29 06:11:52 UTC
+host: lxc on Debian GNU/Linux 12 (bookworm)
+
+--- absolute path ---
+/workspace/projects/TEB3033-Photo-Sharing
+
+--- structure ---
+.
+./MASTER_PROMPT.md
+./README.md
+./backend
+./backend/requirements-dev.txt
+./backend/requirements.txt
+./database
+./docs
+./docs/PHASE_0_ENVIRONMENT_REPORT.md
+./docs/SOFTWARE_READINESS.md
+./evidence
+./evidence/PHASE_0_VERIFICATION.log
+./frontend
+./tests
+
+--- files, sizes, sha256 ---
+MASTER_PROMPT.md                                 13158 bytes  cb14b209e79dd17d
+README.md                                         2752 bytes  f7ea954936e72198
+backend/requirements.txt                           274 bytes  67340bdd977cfc0e
+backend/requirements-dev.txt                       101 bytes  e31f09543677f9d1
+docs/PHASE_0_ENVIRONMENT_REPORT.md                5866 bytes  6389eef97d6455fc
+docs/SOFTWARE_READINESS.md                        8103 bytes  eac39fb5ab7151b7
+
+--- no application source yet (expect none) ---
+none
+
+--- toolchain versions verified in this phase ---
+git      git version 2.39.5
+python   Python 3.11.2 at /usr/bin/python3
+venv     available
+node     v24.20.0
+npm      11.19.0
+docker   Docker version 20.10.24+dfsg1, build 297e128
+
+--- backend venv package versions ---
+fastapi==0.162.0
+httpx==0.28.1
+locust==2.47.0
+pydantic==2.14.1
+pytest==9.2.0
+python-dotenv==1.2.4
+python-multipart==0.0.32
+starlette==1.10.0
+supabase==2.33.0
+uvicorn==0.54.0
+
+--- report hygiene checks ---
+em dashes in docs:  0
+en dashes in docs:  0
+credential hits:    0
+
+--- disk ---
+/dev/mapper/vg--ai-vm--100--disk--0   99G   52G   42G  56% /

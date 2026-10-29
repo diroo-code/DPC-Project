@@ -1,0 +1,61 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.2, pytest-9.2.0, pluggy-1.7.0 -- /workspace/projects/TEB3033-Photo-Sharing/backend/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /workspace/projects/TEB3033-Photo-Sharing/backend
+configfile: pytest.ini
+testpaths: tests
+plugins: locust-2.47.0, anyio-4.15.1
+collecting ... collected 50 items
+
+tests/test_auth_api.py::test_health_returns_expected_shape PASSED        [  2%]
+tests/test_auth_api.py::test_ready_reports_database_ok PASSED            [  4%]
+tests/test_auth_api.py::test_me_rejects_missing_token PASSED             [  6%]
+tests/test_auth_api.py::test_me_rejects_wrong_scheme PASSED              [  8%]
+tests/test_auth_api.py::test_me_rejects_garbage_token PASSED             [ 10%]
+tests/test_auth_api.py::test_me_rejects_expired_token PASSED             [ 12%]
+tests/test_auth_api.py::test_me_rejects_wrong_audience PASSED            [ 14%]
+tests/test_auth_api.py::test_me_rejects_token_signed_with_another_secret PASSED [ 16%]
+tests/test_auth_api.py::test_me_returns_the_callers_profile PASSED       [ 18%]
+tests/test_auth_api.py::test_me_does_not_duplicate_the_profile PASSED    [ 20%]
+tests/test_auth_api.py::test_me_recovers_when_the_profile_row_is_missing PASSED [ 22%]
+tests/test_auth_api.py::test_patch_updates_display_name_and_bio PASSED   [ 24%]
+tests/test_auth_api.py::test_patch_can_clear_the_bio PASSED              [ 26%]
+tests/test_auth_api.py::test_patch_forbids_unknown_fields PASSED         [ 28%]
+tests/test_auth_api.py::test_patch_validates_lengths[payload0] PASSED    [ 30%]
+tests/test_auth_api.py::test_patch_validates_lengths[payload1] PASSED    [ 32%]
+tests/test_auth_api.py::test_patch_validates_lengths[payload2] PASSED    [ 34%]
+tests/test_auth_api.py::test_patch_cannot_change_another_user PASSED     [ 36%]
+tests/test_rls.py::test_user_sees_only_visible_photos PASSED             [ 38%]
+tests/test_rls.py::test_anonymous_role_cannot_read_photos PASSED         [ 40%]
+tests/test_rls.py::test_friendship_insert_must_be_self_requested PASSED  [ 42%]
+tests/test_rls.py::test_only_the_addressee_can_accept PASSED             [ 44%]
+tests/test_rls.py::test_friendship_is_invisible_to_third_parties PASSED  [ 46%]
+tests/test_rls.py::test_profile_update_is_self_only PASSED               [ 48%]
+tests/test_rls.py::test_non_friend_cannot_comment PASSED                 [ 50%]
+tests/test_rls.py::test_friend_can_comment_on_shared_photo PASSED        [ 52%]
+tests/test_rls.py::test_friend_cannot_see_comments_on_owner_only_photo PASSED [ 54%]
+tests/test_rls.py::test_comment_deletion_rights PASSED                   [ 56%]
+tests/test_rls.py::test_only_the_owner_can_tag PASSED                    [ 58%]
+tests/test_rls.py::test_friend_cannot_update_photo_metadata PASSED       [ 60%]
+tests/test_rls.py::test_can_view_photo_function_matches_policies PASSED  [ 62%]
+tests/test_schema.py::test_expected_tables_exist PASSED                  [ 64%]
+tests/test_schema.py::test_every_table_has_rls_enabled PASSED            [ 66%]
+tests/test_schema.py::test_trigger_creates_profile PASSED                [ 68%]
+tests/test_schema.py::test_duplicate_username_gets_a_suffix PASSED       [ 70%]
+tests/test_schema.py::test_exact_duplicate_username_is_rejected PASSED   [ 72%]
+tests/test_schema.py::test_uppercase_username_is_rejected_before_the_unique_index PASSED [ 74%]
+tests/test_schema.py::test_username_format_is_enforced PASSED            [ 76%]
+tests/test_schema.py::test_self_friendship_is_rejected PASSED            [ 78%]
+tests/test_schema.py::test_duplicate_active_friendship_is_rejected_in_either_direction PASSED [ 80%]
+tests/test_schema.py::test_rejected_request_does_not_block_a_new_one PASSED [ 82%]
+tests/test_schema.py::test_pending_request_cannot_carry_a_response_time PASSED [ 84%]
+tests/test_schema.py::test_photo_mime_type_is_restricted PASSED          [ 86%]
+tests/test_schema.py::test_photo_size_limit_is_5mb PASSED                [ 88%]
+tests/test_schema.py::test_photo_path_must_start_with_owner_folder PASSED [ 90%]
+tests/test_schema.py::test_daily_upload_quota_is_20 PASSED               [ 92%]
+tests/test_schema.py::test_comment_body_cannot_be_blank PASSED           [ 94%]
+tests/test_schema.py::test_tag_format_is_normalised PASSED               [ 96%]
+tests/test_schema.py::test_updated_at_changes_on_update PASSED           [ 98%]
+tests/test_schema.py::test_deleting_photo_cascades_comments_and_tags PASSED [100%]
+
+============================== 50 passed in 4.28s ==============================

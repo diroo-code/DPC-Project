@@ -1,0 +1,24 @@
+=== building a fresh database from the migrations ===
+   database ready
+
+=== creating a test account through the auth trigger ===
+   user c0f6ab22-c25a-488f-8341-27c2d1cf6d17 created, profile row expected via trigger
+
+=== starting uvicorn ===
+   pid 42311, ready=1
+
+=== acceptance checks ===
+   GET /health            -> 200  {"status":"ok","service":"TEB3033 Photo Sharing API","version":"0.1.0"}
+   GET /ready             -> 200  {"status":"ready","database":"ok"}
+   GET /auth/me no token  -> 401  {"detail":"missing bearer token"}
+   GET /auth/me bad token -> 401  {"detail":"malformed token header"}
+   GET /auth/me valid     -> 200  {"id":"c0f6ab22-c25a-488f-8341-27c2d1cf6d17","username":"phase1","display_name":"Phase One","bio":null,"avatar_path":null,"created_at":"2026-10-29T06:28:54.997411Z","updated_at":"2026-10-29T06:28:54.997411Z"}
+   PATCH /auth/me         -> 200  {"id":"c0f6ab22-c25a-488f-8341-27c2d1cf6d17","username":"phase1","display_name":"Phase One Updated","bio":"Verified in Phase 1.","avatar_path":null,"created_at":"2026-10-29T06:28:54.997411Z","updated_at":"2026-10-29T06:28:55.704450Z"}
+   GET /docs              -> 200
+
+=== stopping by pid ===
+   stopped
+   port released: yes
+
+=== server log (should be empty at warning level) ===
+=== done ===
