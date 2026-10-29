@@ -17,3 +17,5 @@ frontend/dist/
 *.log
 !evidence/*.log
 .DS_Store
+
+backend/test-output.txt
