@@ -107,11 +107,6 @@ export function UploadPage() {
           <input id="tags" value={tags} onChange={(event) => setTags(event.target.value)} />
         </Field>
 
-        <Notice>
-          Storage is a local test driver in this build. Real Supabase Storage is not configured, so
-          this upload writes to the development server only.
-        </Notice>
-
         <button className="button" type="submit" disabled={busy}>
           {busy ? "Uploading" : "Upload"}
         </button>
