@@ -1,11 +1,8 @@
-# Cloudflare Pages response headers. Copied verbatim into dist/ by Vite.
-#
-# The Content-Security-Policy here is the static fallback. The build also injects a meta CSP generated
-# from VITE_API_BASE_URL and VITE_SUPABASE_URL, so a build pointed at a real project automatically
-# allows exactly that project's origin and nothing wider.
+
+# Cloudflare Pages security headers
 
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://wvwbtdcqvddbfdwvzfbx.supabase.co; font-src 'self'; connect-src 'self' https://dpc-project-api.onrender.com https://YOUR-PROJECT-REF.supabase.co wss://YOUR-PROJECT-REF.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
