@@ -175,6 +175,7 @@ async def upload_photo(
     return _row_to_photo(row)
 
 
+
 def _query_photos(
     user: CurrentUser,
     limit: int,
@@ -186,38 +187,79 @@ def _query_photos(
     tag: str | None,
 ) -> PhotoPage:
     where = [_visible_predicate()]
-    params: dict[str, Any] = {"uid": str(user.id), "limit": limit, "offset": offset}
+    params: dict[str, Any] = {
+        "uid": str(user.id),
+        "limit": limit,
+        "offset": offset,
+    }
 
-    if uploader:
-        where.append("pr.username = %(uploader)s")
-        params["uploader"] = uploader.lower()
+    # Search keyword across captions, tags and usernames.
+    if q and q.strip():
+        keyword = f"%{q.strip()}%"
+        where.append("""
+            (
+                coalesce(p.caption, '') ILIKE %(q)s
+                OR pr.username ILIKE %(q)s
+                OR EXISTS (
+                    SELECT 1
+                    FROM public.photo_tags t
+                    WHERE t.photo_id = p.id
+                    AND t.tag ILIKE %(q)s
+                )
+            )
+        """)
+        params["q"] = keyword
+
+    # Partial, case-insensitive username filter.
+    if uploader and uploader.strip():
+        where.append("pr.username ILIKE %(uploader)s")
+        params["uploader"] = f"%{uploader.strip()}%"
+
+    # Date range filters.
     if date_from:
         where.append("p.created_at >= %(date_from)s")
         params["date_from"] = date_from
+
     if date_to:
-        # Inclusive of the whole end date.
         where.append("p.created_at < (%(date_to)s::date + interval '1 day')")
         params["date_to"] = date_to
-    if q:
-        where.append("p.caption ilike %(q)s")
-        params["q"] = f"%{q}%"
-    if tag:
-        where.append(
-            "exists (select 1 from public.photo_tags t where t.photo_id = p.id and t.tag = %(tag)s)"
-        )
-        params["tag"] = tag.lower()
 
-    clause = " and ".join(where)
+    # Partial, case-insensitive tag filter.
+    if tag and tag.strip():
+        where.append("""
+            EXISTS (
+                SELECT 1
+                FROM public.photo_tags t
+                WHERE t.photo_id = p.id
+                AND t.tag ILIKE %(tag)s
+            )
+        """)
+        params["tag"] = f"%{tag.strip().lower()}%"
+
+    clause = " AND ".join(where)
+
     total = db.fetch_one(
-        f"select count(*) as n from public.photos p join public.profiles pr on pr.id = p.owner_id where {clause}",
+        f"""
+        SELECT count(*) AS n
+        FROM public.photos p
+        JOIN public.profiles pr ON pr.id = p.owner_id
+        WHERE {clause}
+        """,
         params,
     )["n"]
 
     rows = db.fetch_all(
-        f"{PHOTO_SELECT} where {clause} order by p.created_at desc, p.id desc limit %(limit)s offset %(offset)s",
+        f"""
+        {PHOTO_SELECT}
+        WHERE {clause}
+        ORDER BY p.created_at DESC, p.id DESC
+        LIMIT %(limit)s OFFSET %(offset)s
+        """,
         params,
     )
-    items = [_row_to_photo(r) for r in rows]
+
+    items = [_row_to_photo(row) for row in rows]
+
     return PhotoPage(
         items=items,
         total=total,

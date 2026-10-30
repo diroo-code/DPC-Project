@@ -325,3 +325,110 @@ def test_uppercase_tag_is_normalised_not_rejected(client, conn: psycopg.Connecti
     response = upload(client, alice, tags="SUNSET")
     assert response.status_code == 201
     assert response.json()["tags"] == ["sunset"]
+
+
+def test_search_matches_partial_tag(client, conn: psycopg.Connection) -> None:
+    alice = create_user(conn, "alice")
+    photo = make_photo(conn, alice, caption="Holiday photo")
+
+    conn.execute(
+        "INSERT INTO public.photo_tags (photo_id, tag) VALUES (%s, %s)",
+        (photo, "hiking"),
+    )
+
+    response = client.get(
+        "/api/v1/photos/search?q=hik",
+        headers=auth(alice),
+    )
+
+    assert response.status_code == 200
+    assert [item["id"] for item in response.json()["items"]] == [str(photo)]
+
+
+def test_search_matches_partial_username(client, conn: psycopg.Connection) -> None:
+    alice = create_user(conn, "alice")
+    bob = create_user(conn, "bob")
+
+    make_friends(conn, alice, bob)
+    photo = make_photo(conn, bob, caption="A normal photo")
+
+    response = client.get(
+        "/api/v1/photos/search?q=bo",
+        headers=auth(alice),
+    )
+
+    assert response.status_code == 200
+    assert [item["id"] for item in response.json()["items"]] == [str(photo)]
+
+
+def test_search_matches_caption_tag_and_username(
+    client, conn: psycopg.Connection
+) -> None:
+    alice = create_user(conn, "alice")
+    bob = create_user(conn, "bob")
+    carol = create_user(conn, "carol")
+
+    make_friends(conn, alice, bob)
+    make_friends(conn, alice, carol)
+
+    caption_photo = make_photo(
+        conn, alice, caption="specialkeyword holiday"
+    )
+
+    tag_photo = make_photo(
+        conn, alice, caption="Another holiday"
+    )
+    conn.execute(
+        "INSERT INTO public.photo_tags (photo_id, tag) VALUES (%s, %s)",
+        (tag_photo, "specialkeyword"),
+    )
+
+    username_photo = make_photo(
+        conn, bob, caption="Normal photo"
+    )
+    # Username "carol" is tested separately below.
+    username_photo = make_photo(
+        conn, carol, caption="Normal photo"
+    )
+
+    response = client.get(
+        "/api/v1/photos/search?q=specialkeyword",
+        headers=auth(alice),
+    )
+
+    assert response.status_code == 200
+    ids = {item["id"] for item in response.json()["items"]}
+
+    assert str(caption_photo) in ids
+    assert str(tag_photo) in ids
+    assert len(ids) == 2
+
+
+def test_search_does_not_return_invisible_photos(
+    client, conn: psycopg.Connection
+) -> None:
+    alice = create_user(conn, "alice")
+    bob = create_user(conn, "bob")
+    carol = create_user(conn, "carol")
+
+    make_friends(conn, alice, bob)
+
+    visible_photo = make_photo(
+        conn, bob, visibility="friends", caption="uniquekeyword"
+    )
+
+    hidden_photo = make_photo(
+        conn, carol, visibility="friends", caption="uniquekeyword"
+    )
+
+    response = client.get(
+        "/api/v1/photos/search?q=uniquekeyword",
+        headers=auth(alice),
+    )
+
+    assert response.status_code == 200
+
+    ids = {item["id"] for item in response.json()["items"]}
+
+    assert str(visible_photo) in ids
+    assert str(hidden_photo) not in ids
