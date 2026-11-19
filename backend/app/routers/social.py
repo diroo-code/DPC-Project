@@ -145,10 +145,17 @@ def reject_request(
 def list_friends(user: CurrentUser = Depends(get_current_user)) -> list[FriendOut]:
     rows = db.fetch_all(
         """
-        select p.id, p.username, p.display_name
+        select
+            p.id,
+            f.id as friendship_id,
+            p.username,
+            p.display_name
         from public.friendships f
         join public.profiles p
-          on p.id = case when f.requester_id = %s then f.addressee_id else f.requester_id end
+          on p.id = case
+              when f.requester_id = %s then f.addressee_id
+              else f.requester_id
+          end
         where f.status = 'accepted'
           and (f.requester_id = %s or f.addressee_id = %s)
         order by p.username

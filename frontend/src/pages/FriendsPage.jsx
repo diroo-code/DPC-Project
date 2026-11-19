@@ -158,7 +158,7 @@ export function FriendsPage() {
               <ConfirmButton
                 className="link"
                 prompt={`Remove ${friend.username} from your friends?`}
-                onConfirm={() => unfriend(friend.id)}
+                onConfirm={() => unfriend(friend.friendship_id)}
               >
                 Remove
               </ConfirmButton>

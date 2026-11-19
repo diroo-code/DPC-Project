@@ -115,6 +115,7 @@ class FriendRequestCreate(BaseModel):
 
 class FriendOut(BaseModel):
     id: UUID
+    friendship_id: UUID
     username: str
     display_name: str
 
